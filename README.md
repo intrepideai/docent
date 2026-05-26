@@ -49,7 +49,7 @@
 npx @intrepideai/docentic init
 ```
 
-That commits a `docentic/template-scaffold` branch and opens a PR (if `gh` is configured). ~50 files. Stack-aware auto-detection.
+That commits a `docentic/template-scaffold` branch and opens a PR (if `gh` is configured). ~50 files. Works with any stack in the JS/TS ecosystem.
 
 ### 2. In any agent with repo filesystem access (Claude Code · Cursor agent · Codex CLI · Gemini CLI · …)
 
@@ -110,7 +110,7 @@ Agent: *greps for "model"*
 ```text
 You: "What's the data model?"
 Agent: *reads AGENTS.md → docs/DATA.md*
-        *quotes the actual Prisma schema with line numbers*
+        *quotes the actual schema with line numbers*
         *links back to ARCHITECTURE.md for context*
 ```
 
