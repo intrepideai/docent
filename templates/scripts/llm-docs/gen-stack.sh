@@ -97,7 +97,7 @@ generated_hash: pending
 
 > **Anchor:** [↑ ARCHITECTURE.md](./ARCHITECTURE.md) · [← AGENTS.md](../AGENTS.md)
 > **Purpose:** Tech stack and runtime versions for this repo.
-> **Source of truth:** [\`package.json\`](../package.json)${APP_PKG:+, [\`$APP_PKG\`](../$APP_PKG)}
+> **Source of truth:** [\`package.json\`](../package.json)$( [ "$IS_MONOREPO" = "true" ] && echo ", [\`$APP_PKG\`](../$APP_PKG)" )
 
 ## Repo
 

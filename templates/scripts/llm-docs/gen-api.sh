@@ -88,14 +88,16 @@ elif [ "$STACK_TYPE" = "express" ] && [ -d "${API_DIR:-}" ]; then
   if command -v rg >/dev/null 2>&1; then
     rg --no-filename -oI '(app|router)\.(get|post|put|patch|delete)\s*\(\s*["'"'"'][^"'"'"']+["'"'"']' \
       "$API_DIR" --type ts 2>/dev/null \
-      | sed -E "s|(app\|router)\.([a-z]+)\s*\(\s*[\"']([^\"']+)[\"']|\U\2\t\3|" \
+      | sed -E "s/(app|router)\\.([a-z]+)[[:space:]]*\\([[:space:]]*[\"']([^\"']+)[\"'].*/\\2\t\\3/" \
+      | awk -F'\t' '{print toupper($1) "\t" $2}' \
       | sort -t$'\t' -k2 \
       | while IFS=$'\t' read -r method path; do
           echo "| \`$method\` | \`$path\` | \`$API_DIR/\` |"
         done
   else
     grep -rE '(app|router)\.(get|post|put|patch|delete)\s*\(' "$API_DIR" --include='*.ts' 2>/dev/null \
-      | sed -E "s|^([^:]+):.*\.(get|post|put|patch|delete)\s*\(\s*[\"']([^\"']+)[\"'].*|\U\2\t\3\t\1|" \
+      | sed -E "s|^([^:]+):.*\\.(get|post|put|patch|delete)[[:space:]]*\\([[:space:]]*[\"']([^\"']+)[\"'].*|\\3\t\\2\t\\1|" \
+      | awk -F'\t' '{print toupper($1) "\t" $2 "\t" $3}' \
       | sort -t$'\t' -k2 \
       | while IFS=$'\t' read -r method path file; do
           echo "| \`$method\` | \`$path\` | [\`$file\`](../$file) |"
@@ -108,7 +110,8 @@ elif [ "$STACK_TYPE" = "fastify" ] && [ -d "${API_DIR:-}" ]; then
   echo "| Method | Path | File |"
   echo "|---|---|---|"
   grep -rE 'fastify\.(get|post|put|patch|delete)\s*\(' "$API_DIR" --include='*.ts' 2>/dev/null \
-    | sed -E "s|^([^:]+):.*fastify\.(get|post|put|patch|delete)\s*\(\s*[\"']([^\"']+)[\"'].*|\U\2\t\3\t\1|" \
+    | sed -E "s|^([^:]+):.*fastify\\.(get|post|put|patch|delete)[[:space:]]*\\([[:space:]]*[\"']([^\"']+)[\"'].*|\\2\t\\3\t\\1|" \
+    | awk -F'\t' '{print toupper($1) "\t" $2 "\t" $3}' \
     | sort -t$'\t' -k2 \
     | while IFS=$'\t' read -r method path file; do
         echo "| \`$method\` | \`$path\` | [\`$file\`](../$file) |"
@@ -121,7 +124,8 @@ elif [ "$STACK_TYPE" = "hono" ] && [ -n "${API_DIR:-}" ]; then
   echo "|---|---|---|"
   find "$API_DIR" -name '*.ts' -o -name '*.tsx' 2>/dev/null \
     | xargs grep -E '\.(get|post|put|patch|delete)\s*\(' 2>/dev/null \
-    | sed -E "s|^([^:]+):.*\.(get|post|put|patch|delete)\s*\(\s*[\"']([^\"']+)[\"'].*|\U\2\t\3\t\1|" \
+    | sed -E "s|^([^:]+):.*\\.(get|post|put|patch|delete)[[:space:]]*\\([[:space:]]*[\"']([^\"']+)[\"'].*|\\2\t\\3\t\\1|" \
+    | awk -F'\t' '{print toupper($1) "\t" $2 "\t" $3}' \
     | sort -t$'\t' -k2 \
     | while IFS=$'\t' read -r method path file; do
         echo "| \`$method\` | \`$path\` | [\`$file\`](../$file) |"

@@ -329,8 +329,9 @@ assert_contains     "4 Express shown"                "$OUT" "Express"
 assert_contains     "4 Drizzle shown"                "$OUT" "Drizzle ORM"
 assert_contains     "4 Vite shown"                   "$OUT" "Vite"
 assert_contains     "4 Resend shown"                 "$OUT" "Resend"
-assert_not_contains "4 no Workspaces section"        "$OUT" "## Workspaces"
-assert_not_contains "4 no Next.js shown"             "$OUT" "Next.js"
+assert_not_contains "4 no Workspaces section"                "$OUT" "## Workspaces"
+assert_not_contains "4 no Next.js shown"                     "$OUT" "Next.js"
+assert_not_contains "4 no duplicate source-of-truth link"    "$OUT" "package.json), [\`package.json\`"
 cleanup "$DIR"
 
 # ── Workspaces section appears for monorepo ───────────────────────────────────
@@ -413,6 +414,8 @@ OUT=$(bash "$DIR/scripts/llm-docs/gen-api.sh" 2>/dev/null)
 assert_contains     "6e stack=express in header"         "$OUT" "express"
 assert_contains     "6e endpoint table header"           "$OUT" "| Method | Path | File |"
 assert_not_contains "6e no Next.js Route Handlers text"  "$OUT" "Next.js Route Handlers"
+assert_contains     "6e GET uppercased (no U prefix)"    "$OUT" '`GET`'
+assert_not_contains "6e no Uget artifact"                "$OUT" '`Uget`'
 cleanup "$DIR"
 
 # Next.js: correct route extraction
